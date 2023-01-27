@@ -40,4 +40,8 @@ public class StudentController {
     }
 
 
+    @GetMapping("/student/id")
+    public Student getStudent(@RequestParam Long id) {
+        return this.studentService.findById(id);
+    }
 }

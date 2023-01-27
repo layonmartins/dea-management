@@ -22,4 +22,10 @@ public class StudentService {
     public Page<Student> findAllStudentsPaginated(Integer page, Integer pageSize) {
         return this.studentRepository.findAllPaginated(PageRequest.of(page, pageSize));
     }
+
+    public Student findById(Long id) {
+        // return this.studentRepository.findById(id); // doesn't work
+
+        return this.studentRepository.findStudentById(id);
+    }
 }

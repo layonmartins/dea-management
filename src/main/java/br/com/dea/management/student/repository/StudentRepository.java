@@ -12,4 +12,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("SELECT s FROM Student s")
     public Page<Student> findAllPaginated(Pageable pageable);
+
+    @Query("SELECT s FROM Student s WHERE id = :id")
+    public Student findStudentById(Long id);
 }
