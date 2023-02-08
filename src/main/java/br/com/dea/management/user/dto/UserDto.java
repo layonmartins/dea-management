@@ -1,8 +1,17 @@
-package br.com.dea.management.user.domain;
+package br.com.dea.management.user.dto;
+
+import br.com.dea.management.user.domain.User;
+import lombok.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class UserDto {
 
     private String name;

@@ -1,7 +1,7 @@
 package br.com.dea.management.user.controller;
 
 import br.com.dea.management.user.domain.User;
-import br.com.dea.management.user.domain.UserDto;
+import br.com.dea.management.user.dto.UserDto;
 import br.com.dea.management.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
