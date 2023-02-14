@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -68,6 +69,16 @@ public class UserGetAllTests {
                 .andExpect(jsonPath("$.content[3].name", is("name 3")))
                 .andExpect(jsonPath("$.content[3].email", is("email 3")))
                 .andExpect(jsonPath("$.content[3].linkedin", is("linkedin 3")));
+    }
+
+    @Test
+    void whenRequestingUserListAndPageQueryParamIsInvalid_thenReturnBadRequestError() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/users?page=xx&pageSize=4"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.details").isArray())
+                .andExpect(jsonPath("$.details", hasSize(1)));
     }
 
     private void createFakeUsers(int amount) {
