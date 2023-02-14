@@ -81,6 +81,16 @@ public class UserGetAllTests {
                 .andExpect(jsonPath("$.details", hasSize(1)));
     }
 
+    @Test
+    void whenRequestingUserListAndPageQueryParamIsMissing_thenReturnBadRequestsError() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/users?pageSize=4"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.details").isArray())
+                .andExpect(jsonPath("$.details", hasSize(1)));
+    }
+
     private void createFakeUsers(int amount) {
         for (int i = 0; i < amount; i++) {
             User u = new User();
