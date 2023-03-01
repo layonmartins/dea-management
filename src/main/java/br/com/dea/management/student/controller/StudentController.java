@@ -83,6 +83,8 @@ public class StudentController {
         return student;
     }
 
+
+
     @Deprecated
     @GetMapping("/student/id")
     public Student getStudent(@RequestParam Long id) {

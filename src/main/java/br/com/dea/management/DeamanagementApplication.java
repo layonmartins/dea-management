@@ -48,7 +48,7 @@ public class DeamanagementApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		//Deleting all Users
-		this.userRepository.deleteAll();
+		//this.userRepository.deleteAll();
 
 		//Create some students
 		for (int i = 0; i < 100; i++) {
@@ -65,7 +65,7 @@ public class DeamanagementApplication implements CommandLineRunner {
 					.user(u)
 					.build();
 
-			this.studentRepository.save(student);
+			//this.studentRepository.save(student);
 		}
 
 	}
