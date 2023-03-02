@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -87,22 +88,13 @@ public class StudentController {
     }
 
 
-    //Example of use on Postman:
-    /*{
-        "name": "layon",
-            "email": "layon@mail.com",
-            "linkedin": "https:linkedin.com",
-            "graduation": "Computer Science",
-            "university": "UFScar",
-            "password": "123"
-    }*/
     @Operation(summary = "Create a new Student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Payload not valid"),
             @ApiResponse(responseCode = "500", description = "Error creating student")
     })
-    @PostMapping("/student")
+    @PostMapping(value = "/student")
     public void createStudent(@Valid @RequestBody CreateStudentRequestDto createStudentRequestDto) {
         log.info(String.format("Creating Student : Payload : %s", createStudentRequestDto));
 
