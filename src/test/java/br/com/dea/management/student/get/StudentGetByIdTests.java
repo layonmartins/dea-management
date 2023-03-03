@@ -1,8 +1,8 @@
-package br.com.dea.management.student;
+package br.com.dea.management.student.get;
 
+import br.com.dea.management.student.StudentTestUtils;
 import br.com.dea.management.student.domain.Student;
 import br.com.dea.management.student.repository.StudentRepository;
-import br.com.dea.management.user.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDate;
-import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -36,6 +33,9 @@ public class StudentGetByIdTests {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private StudentTestUtils studentTestUtils;
+
     @BeforeEach
     void beforeEach() {
         log.info("Before each test in " + StudentGetByIdTests.class.getSimpleName());
@@ -49,7 +49,7 @@ public class StudentGetByIdTests {
     @Test
     void whenRequestingAnExistentStudentById_thenReturnTheStudentSuccessfully() throws Exception {
         this.studentRepository.deleteAll();
-        this.createFakeStudents(10);
+        this.studentTestUtils.createFakeStudents(10);
 
         Student student = this.studentRepository.findAll().get(0);
 
@@ -84,27 +84,6 @@ public class StudentGetByIdTests {
                 .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.details").isArray())
                 .andExpect(jsonPath("$.details", hasSize(1)));
-    }
-
-    private void createFakeStudents(int amount) {
-        for (int i = 0; i < amount; i++) {
-            User u = new User();
-            u.setEmail("email " + i);
-            u.setName("name " + i);
-            u.setLinkedin("linkedin " + i);
-            u.setPassword("pwd " + i);
-
-            Student student = Student.builder()
-                    .university("UNI " + i)
-                    .graduation("Grad " + i)
-                    .finishDate(LocalDate.now())
-                    .user(u)
-                    .id(Long.parseLong(String.valueOf(i)))
-                    .build();
-
-            this.studentRepository.save(student);
-        }
-        List<Student> s = this.studentRepository.findAll();
     }
 
 }

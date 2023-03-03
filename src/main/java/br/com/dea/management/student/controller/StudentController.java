@@ -110,7 +110,7 @@ public class StudentController {
             @ApiResponse(responseCode = "404", description = "Student not found"),
             @ApiResponse(responseCode = "500", description = "Error creating student")
     })
-    @PostMapping("/student/{studentId}")
+    @PutMapping("/student/{studentId}")
     public void updateStudent(@PathVariable Long studentId, @Valid @RequestBody UpdateStudentRequestDto updateStudentRequestDto) {
         log.info(String.format("Updating Student : Payload : %s", updateStudentRequestDto));
 
