@@ -46,12 +46,12 @@ public class StudentUpdateSuccessCaseTests {
 
         String payload = "{" +
                 "\"name\": \"name\"," +
-                "\"email\": \"email\"," +
+                "\"email\": \"email@mail.com\"," +
                 "\"linkedin\": \"linkedin\"," +
                 "\"university\": \"university\"," +
                 "\"graduation\": \"graduation\"," +
-                "\"password\": \"password\"," +
-                "\"finishDate\": \"2023-02-27\"" +
+                "\"password\": \"1234\"," +
+                "\"finishDate\": \"2033-03-03\"" +
                 "}";
 
         mockMvc.perform(put("/student/" + studentBase.getId())
@@ -61,10 +61,11 @@ public class StudentUpdateSuccessCaseTests {
         Student student = this.studentRepository.findAll().get(0);
 
         assertThat(student.getUser().getName()).isEqualTo("name");
-        assertThat(student.getUser().getEmail()).isEqualTo("email");
+        assertThat(student.getUser().getEmail()).isEqualTo("email@mail.com");
         assertThat(student.getUser().getLinkedin()).isEqualTo("linkedin");
-        assertThat(student.getUser().getPassword()).isEqualTo("password");
+        assertThat(student.getUser().getPassword()).isEqualTo("1234");
         assertThat(student.getGraduation()).isEqualTo("graduation");
         assertThat(student.getUniversity()).isEqualTo("university");
+        assertThat(student.getFinishDate()).isEqualTo("2033-03-03");
     }
 }
