@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @ToString
 public class EmployeeDto {
+
     private Long id;
     private String name;
     private String email;
@@ -30,10 +31,10 @@ public class EmployeeDto {
         return name;
     }
 
-    public static List<EmployeeDto> fromEmployees(List<Employee> employee) {
-        return employee.stream().map(empl -> {
-            EmployeeDto employeeDto = EmployeeDto.fromEmployee(empl);
-            return employeeDto;
+    public static List<EmployeeDto> fromEmployees(List<Employee> students) {
+        return students.stream().map(student -> {
+            EmployeeDto studentDto = EmployeeDto.fromEmployee(student);
+            return studentDto;
         }).collect(Collectors.toList());
     }
 
@@ -51,4 +52,6 @@ public class EmployeeDto {
 
         return employeeDto;
     }
+
 }
+

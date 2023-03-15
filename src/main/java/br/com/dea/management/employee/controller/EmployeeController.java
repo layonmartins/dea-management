@@ -24,7 +24,7 @@ public class EmployeeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Page or Page Size params not valid"),
-            @ApiResponse(responseCode = "500", description = "Error fetching employee list")
+            @ApiResponse(responseCode = "500", description = "Error fetching employee list"),
     })
     @GetMapping("/employee")
     public Page<EmployeeDto> getEmployees(@RequestParam(required = true) Integer page,
@@ -38,6 +38,7 @@ public class EmployeeController {
         log.info(String.format("Employees loaded successfully : Employees : %s : pageSize", employees.getContent()));
 
         return employees;
+
     }
 
     @Operation(summary = "Load the employee by ID.")
@@ -52,11 +53,11 @@ public class EmployeeController {
 
         log.info(String.format("Fetching employee by id : Id : %s", id));
 
-        EmployeeDto employeeDto = EmployeeDto.fromEmployee(this.employeeService.findEmployeeById(id));
+        EmployeeDto employee = EmployeeDto.fromEmployee(this.employeeService.findEmployeeById(id));
 
-        log.info(String.format("Employee loaded successfully : Employee : %s", employeeDto));
+        log.info(String.format("Employee loaded successfully : Employee : %s", employee));
 
-        return employeeDto;
+        return employee;
 
     }
 

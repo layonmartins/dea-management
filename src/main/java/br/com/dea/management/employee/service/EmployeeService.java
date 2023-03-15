@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 @Service
@@ -18,12 +17,12 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public List<Employee> findAllEmployee() {
+    public List<Employee> findAllEmployees() {
         return this.employeeRepository.findAll();
     }
 
     public Page<Employee> findAllEmployeesPaginated(Integer page, Integer pageSize) {
-        return this.employeeRepository.findAllPaginated((Pageable) PageRequest.of(page, pageSize, Sort.by("user.name").ascending()));
+        return this.employeeRepository.findAllPaginated(PageRequest.of(page, pageSize, Sort.by("user.name").ascending()));
     }
 
     public Employee findEmployeeById(Long id) {
@@ -36,3 +35,4 @@ public class EmployeeService {
     }
 
 }
+
