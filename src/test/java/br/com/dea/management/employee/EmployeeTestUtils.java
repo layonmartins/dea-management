@@ -21,7 +21,7 @@ public class EmployeeTestUtils {
 
         Position position = Position.builder()
                 .description("Dev")
-                .seniority("Senior")
+                .seniority("Consult")
                 .build();
 
         this.positionRepository.save(position);

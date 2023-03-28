@@ -1,5 +1,6 @@
 package br.com.dea.management.employee.create;
 
+import br.com.dea.management.academyclass.repository.AcademyClassRepository;
 import br.com.dea.management.employee.EmployeeTestUtils;
 import br.com.dea.management.employee.repository.EmployeeRepository;
 import br.com.dea.management.position.domain.Position;
@@ -29,6 +30,9 @@ class EmployeeCreationPayloadValidationTests {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private AcademyClassRepository academyClassRepository;
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -94,6 +98,8 @@ class EmployeeCreationPayloadValidationTests {
 
     @Test
     void whenRequestingEmployeeCreationWithAValidPayloadButPositionDoesNotExists_thenReturn404Error() throws Exception {
+
+        this.academyClassRepository.deleteAll();
         this.employeeRepository.deleteAll();
         this.positionRepository.deleteAll();
 
