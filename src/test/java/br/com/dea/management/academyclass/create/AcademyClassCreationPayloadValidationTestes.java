@@ -2,7 +2,12 @@ package br.com.dea.management.academyclass.create;
 
 import br.com.dea.management.AcademyTestUtils;
 import br.com.dea.management.academyclass.repository.AcademyClassRepository;
+import br.com.dea.management.academyclass.update.AcademyClassUpdateSuccessCaseTestes;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,6 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test-mysql")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Slf4j
 public class AcademyClassCreationPayloadValidationTestes {
 
     @Autowired
@@ -36,6 +43,16 @@ public class AcademyClassCreationPayloadValidationTestes {
 
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
+
+    @BeforeEach
+    void beforeEach() {
+        log.info("Before each test in " + AcademyClassCreationPayloadValidationTestes.class.getSimpleName());
+    }
+
+    @BeforeAll
+    void beforeSuiteTest() {
+        log.info("Before all tests in " + AcademyClassCreationPayloadValidationTestes.class.getSimpleName());
+    }
 
     @Test
     void whenPayloadRequiredFieldsAreMissing_thenReturn400AndTheErrors() throws Exception {
