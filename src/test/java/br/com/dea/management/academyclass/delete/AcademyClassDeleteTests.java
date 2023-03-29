@@ -1,4 +1,4 @@
-package br.com.dea.management.academyclass.create;
+package br.com.dea.management.academyclass.delete;
 
 import br.com.dea.management.AcademyTestUtils;
 import br.com.dea.management.academyclass.ClassType;
@@ -21,9 +21,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.Charset;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -32,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test-mysql")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
-public class AcademyClassCreationSuccessCaseTestes {
+public class AcademyClassDeleteTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -53,43 +57,48 @@ public class AcademyClassCreationSuccessCaseTestes {
 
     @BeforeEach
     void beforeEach() {
-        log.info("Before each test in " + AcademyClassCreationSuccessCaseTestes.class.getSimpleName());
+        log.info("Before each test in " + AcademyClassDeleteTests.class.getSimpleName());
     }
 
     @BeforeAll
     void beforeSuiteTest() {
-        log.info("Before all tests in " + AcademyClassCreationSuccessCaseTestes.class.getSimpleName());
+        log.info("Before all tests in " + AcademyClassDeleteTests.class.getSimpleName());
     }
 
     @Test
-    void whenRequestingAcademyClassCreationWithAValidPayload_thenCreateAcademyClassSuccessfully() throws Exception {
+    void whenDeleteAAcademyClassThatDoesNotExist_thenReturn404() throws Exception {
+        this.academyClassRepository.deleteAll();
+
+        mockMvc.perform(delete("/academy-class/1")
+                .contentType(APPLICATION_JSON_UTF8))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").exists())
+                .andExpect(jsonPath("$.details").isArray())
+                .andExpect(jsonPath("$.details", hasSize(1)));
+
+    }
+
+    @Test
+    void whenDeleteAAcademyClassThatDoesNotExist_thenReturnSuccessfully() throws Exception {
 
         // Preparing for the Test
         this.academyClassRepository.deleteAll();
         this.employeeRepository.deleteAll();
 
-        // created a valid employee to be the instructor
-        this.employeeTestUtils.createFakeEmployees(1);
-        Long instructorId = this.employeeRepository.findAll().get(0).getId();
+        // created a valid academyClass
+        LocalDate startDate = LocalDate.of(2023, Month.JANUARY, 1);
+        LocalDate endDate = LocalDate.of(2024, Month.DECEMBER, 20);
+        this.academyClassTestUtils.createFakeClass(1, startDate, endDate, ClassType.DEVELOPER);
+        Long academyClassId = this.academyClassRepository.findAll().get(0).getId();
 
-        // created a valid payload passing a valid instructorId
-        String payload = "{" +
-                "\"startDate\": \"2022-01-01\", " +
-                "\"endDate\": \"2023-01-01\", " +
-                "\"classType\" : \"DEVELOPER\", " +
-                "\"instructor\" : " + instructorId +
-                "}";
-
-        // perform the post operation and check if it has success
-        mockMvc.perform(post("/academy-class")
-                        .contentType(APPLICATION_JSON_UTF8).content(payload))
+        mockMvc.perform(delete("/academy-class/" + academyClassId)
+                        .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
-        // check if the inserted AcademyClass is valid
-        AcademyClass academyClass = this.academyClassRepository.findAll().get(0);
-        assertThat(academyClass.getStartDate()).isEqualTo("2022-01-01");
-        assertThat(academyClass.getEndDate()).isEqualTo("2023-01-01");
-        assertThat(academyClass.getClassType()).isEqualTo(ClassType.DEVELOPER);
-        assertThat(academyClass.getInstructor().getId()).isEqualTo(instructorId);
+        // check if the academyCalls has already deleted from DataBase
+        List<AcademyClass> academyClasses = this.academyClassRepository.findAll();
+        assertThat(academyClasses.size()).isEqualTo(0);
+
     }
 }
