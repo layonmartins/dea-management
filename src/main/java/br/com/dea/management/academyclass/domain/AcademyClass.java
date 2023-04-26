@@ -30,7 +30,7 @@ public class AcademyClass {
     @Enumerated(EnumType.STRING)
     private ClassType classType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instructor_id")
     private Employee instructor;
 

@@ -1,6 +1,7 @@
 package br.com.dea.management.academyclass.dto;
 
 
+import br.com.dea.management.academyclass.ClassType;
 import br.com.dea.management.academyclass.domain.AcademyClass;
 import br.com.dea.management.employee.dto.EmployeeDto;
 import lombok.*;
@@ -21,10 +22,11 @@ public class AcademyClassDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private EmployeeDto instructor;
+    private ClassType classType;
 
     public static List<AcademyClassDto> fromAcademyClass(List<AcademyClass> academyClasses) {
-        return academyClasses.stream().map(student -> {
-            AcademyClassDto classDto = AcademyClassDto.fromAcademyClass(student);
+        return academyClasses.stream().map(academyClass -> {
+            AcademyClassDto classDto = AcademyClassDto.fromAcademyClass(academyClass);
             return classDto;
         }).collect(Collectors.toList());
     }
@@ -34,6 +36,7 @@ public class AcademyClassDto {
         academyClassDto.setId(academyClass.getId());
         academyClassDto.setStartDate(academyClass.getStartDate());
         academyClassDto.setEndDate(academyClass.getEndDate());
+        academyClassDto.setClassType(academyClass.getClassType());
 
         academyClassDto.setInstructor(EmployeeDto.fromEmployee(academyClass.getInstructor()));
 

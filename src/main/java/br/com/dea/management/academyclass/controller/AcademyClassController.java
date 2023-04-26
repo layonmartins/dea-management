@@ -23,7 +23,7 @@ public class AcademyClassController {
     @Autowired
     AcademyClassService academyClassService;
 
-    @Operation(summary = "Load the list of academyClass paginated.")
+    @Operation(summary = "Loads the list of academyClass paginated.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Page or Page Size params not valid"),
@@ -44,7 +44,7 @@ public class AcademyClassController {
 
     }
 
-    @Operation(summary = "Load the academyClass by ID.")
+    @Operation(summary = "Loads the academyClass by ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "AcademyClass Id invalid"),
@@ -65,9 +65,9 @@ public class AcademyClassController {
     }
 
 
-    @Operation(summary = "Create a new AcademyClass")
+    @Operation(summary = "Creates a new AcademyClass")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfull operation"),
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Payload not valid"),
             @ApiResponse(responseCode = "500", description = "Error creating AcademyClass")
     })
@@ -75,24 +75,24 @@ public class AcademyClassController {
     public void createAcademyClass(@Valid @RequestBody CreateAcademyClassDto createAcademyClassDto) {
         log.info(String.format("Creating AcademyClass: Payload : %s", createAcademyClassDto));
 
-        AcademyClass academyClass = academyClassService.createAcademyClass(createAcademyClassDto);
+        AcademyClass academyClass = this.academyClassService.createAcademyClass(createAcademyClassDto);
 
         log.info(String.format("AcademyClass created: Payload : %s", createAcademyClassDto));
 
     }
 
-    @Operation(summary = "Update AcademyClass")
+    @Operation(summary = "Updates an AcademyClass")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Payload not valid"),
-            @ApiResponse(responseCode = "400", description = "AcademyClass not found"),
-            @ApiResponse(responseCode = "500", description = "Error creating AcademyClass")
+            @ApiResponse(responseCode = "404", description = "AcademyClass not found"),
+            @ApiResponse(responseCode = "500", description = "Error updating AcademyClass")
     })
     @PutMapping("/academy-class/{academyClassId}")
     public void updateAcademyClass(@PathVariable Long academyClassId, @Valid @RequestBody UpdateAcademyClassDto updateAcademyClassDto) {
         log.info(String.format("Update AcademyClass: Payload : %s", updateAcademyClassDto));
 
-        AcademyClass academyClass = academyClassService.updateAcademyClass(academyClassId, updateAcademyClassDto);
+        AcademyClass academyClass = this.academyClassService.updateAcademyClass(academyClassId, updateAcademyClassDto);
 
         log.info(String.format("AcademyClass updated: Payload : %s", updateAcademyClassDto));
     }
@@ -101,14 +101,14 @@ public class AcademyClassController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Payload not valid"),
-            @ApiResponse(responseCode = "400", description = "AcademyClass not found"),
+            @ApiResponse(responseCode = "404", description = "AcademyClass not found"),
             @ApiResponse(responseCode = "500", description = "Error creating AcademyClass")
     })
     @DeleteMapping("/academy-class/{academyClassId}")
     public void deleteAcademyClass(@PathVariable Long academyClassId) {
         log.info(String.format("Deleting AcademyClass: Payload : %s", academyClassId));
 
-        academyClassService.deleteAcademyClass(academyClassId);
+        this.academyClassService.deleteAcademyClass(academyClassId);
 
         log.info(String.format("AcademyClass deleted: Payload : %s", academyClassId));
     }

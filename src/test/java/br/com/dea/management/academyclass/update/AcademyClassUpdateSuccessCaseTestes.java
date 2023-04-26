@@ -84,7 +84,7 @@ public class AcademyClassUpdateSuccessCaseTestes {
                 "\"startDate\": \"2022-01-01\", " +
                 "\"endDate\": \"2023-01-01\", " +
                 "\"classType\" : \"DESIGN\", " +
-                "\"instructor\" : "  + newInstructorId +
+                "\"instructorId\" : "  + newInstructorId +
                 "}";
 
         mockMvc.perform(put("/academy-class/" + academyClassId)

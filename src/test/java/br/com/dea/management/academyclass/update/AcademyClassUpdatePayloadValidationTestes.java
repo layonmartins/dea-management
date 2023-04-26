@@ -82,8 +82,8 @@ public class AcademyClassUpdatePayloadValidationTestes {
                 .andExpect(jsonPath("$.details[*].errorMessage", hasItem("endDate could not be null")))
                 .andExpect(jsonPath("$.details[*].field", hasItem("classType")))
                 .andExpect(jsonPath("$.details[*].errorMessage", hasItem("classType could not be null")))
-                .andExpect(jsonPath("$.details[*].field", hasItem("instructor")))
-                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("instructor could not be null")));
+                .andExpect(jsonPath("$.details[*].field", hasItem("instructorId")))
+                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("instructorId could not be null")));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class AcademyClassUpdatePayloadValidationTestes {
                 "\"startDate\": \"2022-01-01\", " +
                 "\"endDate\": \"2023-01-01\", " +
                 "\"classType\" : \"DEVELOPER\", " +
-                "\"instructor\" : " + instructorId +
+                "\"instructorId\" : " + instructorId +
                 "}";
 
         //academyClassId = 1 does not exists because we delete all academyClassRepository
@@ -129,7 +129,7 @@ public class AcademyClassUpdatePayloadValidationTestes {
                 "\"startDate\": \"2022-01-01\", " +
                 "\"endDate\": \"2023-01-01\", " +
                 "\"classType\" : \"DEVELOPER\", " +
-                "\"instructor\" : -1 " + // the instructorId -1 does not exist
+                "\"instructorId\" : -1 " + // the instructorId -1 does not exist
                 "}";
 
         mockMvc.perform(put("/academy-class/" + academyClassId)

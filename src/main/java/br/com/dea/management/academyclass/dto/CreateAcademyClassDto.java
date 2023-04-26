@@ -1,7 +1,6 @@
 package br.com.dea.management.academyclass.dto;
 
 import br.com.dea.management.academyclass.ClassType;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -24,7 +23,7 @@ public class CreateAcademyClassDto {
     @NotNull(message = "classType could not be null")
     private ClassType classType;
 
-    @NotNull(message = "instructor could not be null")
-    private Long instructor;
+    @NotNull(message = "instructorId could not be null")
+    private Long instructorId;
 
 }

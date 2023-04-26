@@ -77,7 +77,7 @@ public class AcademyClassCreationSuccessCaseTestes {
                 "\"startDate\": \"2022-01-01\", " +
                 "\"endDate\": \"2023-01-01\", " +
                 "\"classType\" : \"DEVELOPER\", " +
-                "\"instructor\" : " + instructorId +
+                "\"instructorId\" : " + instructorId +
                 "}";
 
         // perform the post operation and check if it has success
