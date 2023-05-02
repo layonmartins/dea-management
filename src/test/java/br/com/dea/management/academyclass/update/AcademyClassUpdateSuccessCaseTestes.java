@@ -7,6 +7,7 @@ import br.com.dea.management.academyclass.get.AcademyClassGetAllTests;
 import br.com.dea.management.academyclass.repository.AcademyClassRepository;
 import br.com.dea.management.employee.EmployeeTestUtils;
 import br.com.dea.management.employee.repository.EmployeeRepository;
+import br.com.dea.management.project.repository.ProjectRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +52,9 @@ public class AcademyClassUpdateSuccessCaseTestes {
     @Autowired
     private EmployeeTestUtils employeeTestUtils;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
@@ -67,6 +71,7 @@ public class AcademyClassUpdateSuccessCaseTestes {
     @Test
     void whenAllPayloadAcademyClassRequiredValid_thenReturnSuccessfully() throws Exception {
 
+        this.projectRepository.deleteAll();
         this.academyClassRepository.deleteAll();
         this.employeeRepository.deleteAll();
 

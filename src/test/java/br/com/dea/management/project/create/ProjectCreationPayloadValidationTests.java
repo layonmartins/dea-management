@@ -1,10 +1,9 @@
-package br.com.dea.management.employee.create;
+package br.com.dea.management.project.create;
 
 import br.com.dea.management.academyclass.repository.AcademyClassRepository;
 import br.com.dea.management.employee.EmployeeTestUtils;
+import br.com.dea.management.employee.domain.Employee;
 import br.com.dea.management.employee.repository.EmployeeRepository;
-import br.com.dea.management.position.domain.Position;
-import br.com.dea.management.position.repository.PositionRepository;
 import br.com.dea.management.project.repository.ProjectRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.Charset;
 
@@ -27,96 +27,100 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test-mysql")
-class EmployeeCreationPayloadValidationTests {
-
+public class ProjectCreationPayloadValidationTests {
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private AcademyClassRepository academyClassRepository;
+    private ProjectRepository projectRepository;
 
     @Autowired
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private PositionRepository positionRepository;
+    private AcademyClassRepository academyClassRepository;
 
     @Autowired
     private EmployeeTestUtils employeeTestUtils;
-
-    @Autowired
-    private ProjectRepository projectRepository;
 
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
     @Test
     void whenPayloadRequiredFieldsAreMissing_thenReturn400AndTheErrors() throws Exception {
+
         String payload = "{}";
-        mockMvc.perform(post("/employee")
+
+        mockMvc.perform(post("/project")
                         .contentType(APPLICATION_JSON_UTF8).content(payload))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.details").isArray())
-                .andExpect(jsonPath("$.details", hasSize(4)))
+                .andExpect(jsonPath( "$.details", hasSize(7)))
+                .andExpect(jsonPath("$.details[*].field", hasItem("startDate")))
+                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("Start Date could not be null")))
+                .andExpect(jsonPath("$.details[*].field", hasItem("endDate")))
+                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("End Date could not be null")))
                 .andExpect(jsonPath("$.details[*].field", hasItem("name")))
                 .andExpect(jsonPath("$.details[*].errorMessage", hasItem("Name could not be null")))
-                .andExpect(jsonPath("$.details[*].field", hasItem("email")))
-                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("Email could not be null")))
-                .andExpect(jsonPath("$.details[*].field", hasItem("password")))
-                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("Password could not be null")))
-                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("Password could not be empty")));
+                .andExpect(jsonPath("$.details[*].field", hasItem("externalProductManager")))
+                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("External Product Manager could not be null")))
+                .andExpect(jsonPath("$.details[*].field", hasItem("productOwnerId")))
+                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("Product Owner could not be null")))
+                .andExpect(jsonPath("$.details[*].field", hasItem("scrumMasterId")))
+                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("Scrum Master could not be null")))
+                .andExpect(jsonPath("$.details[*].field", hasItem("client")))
+                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("Client could not be null")));
     }
 
     @Test
-    void whenRequestingEmployeeCreationWithInvalidEmailAndPasswordPayload_thenReturn404Error() throws Exception {
-        this.employeeRepository.deleteAll();
-        this.positionRepository.deleteAll();
+    void whenRequestingProjectCreationWithAValidPayloadButWithAProductOwnerThatDoesNotExists_thenReturn404Error() throws Exception {
 
+        this.academyClassRepository.deleteAll();
+        this.projectRepository.deleteAll();
         this.employeeRepository.deleteAll();
-        Position position = this.employeeTestUtils.createFakePosition("Dev", "Pleno");
+
+        this.employeeTestUtils.createFakeEmployees(1);
+        Employee employee = this.employeeRepository.findAll().get(0);
 
         String payload = "{" +
+                "\"startDate\": \"2022-01-01\"," +
+                "\"endDate\": \"2024-01-01\"," +
                 "\"name\": \"name\"," +
-                "\"email\": \"email\"," +
-                "\"linkedin\": \"linkedin\"," +
-                "\"employeeType\": \"DEVELOPER\"," +
-                "\"password\": \"123\"," +
-                "\"position\": " + position.getId() +
+                "\"client\": \"client\"," +
+                "\"externalProductManager\": \"manager\"," +
+                "\"scrumMasterId\": " + employee.getId() + "," +
+                "\"productOwnerId\": 200000" + //this id does not exist in DB test
                 "}";
-
-        mockMvc.perform(post("/employee")
+        mockMvc.perform(post("/project")
                         .contentType(APPLICATION_JSON_UTF8).content(payload))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").exists())
                 .andExpect(jsonPath("$.details").isArray())
-                .andExpect(jsonPath("$.details", hasSize(2)))
-                .andExpect(jsonPath("$.details[*].field", hasItem("email")))
-                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("Email passed is not valid!")))
-                .andExpect(jsonPath("$.details[*].field", hasItem("password")))
-                .andExpect(jsonPath("$.details[*].errorMessage", hasItem("Password must be between 4 and 8 characters")));
-
+                .andExpect(jsonPath("$.details", hasSize(1)));
     }
 
     @Test
-    void whenRequestingEmployeeCreationWithAValidPayloadButPositionDoesNotExists_thenReturn404Error() throws Exception {
-
-        this.projectRepository.deleteAll();
+    void whenRequestingProjectCreationWithAValidPayloadButWithAScrumMasterThatDoesNotExistsDoesNotExists_thenReturn404Error() throws Exception {
         this.academyClassRepository.deleteAll();
+        this.projectRepository.deleteAll();
         this.employeeRepository.deleteAll();
-        this.positionRepository.deleteAll();
+
+        this.employeeTestUtils.createFakeEmployees(1);
+        Employee employee = this.employeeRepository.findAll().get(0);
 
         String payload = "{" +
+                "\"startDate\": \"2022-01-01\"," +
+                "\"endDate\": \"2024-01-01\"," +
                 "\"name\": \"name\"," +
-                "\"email\": \"email@email.com\"," +
-                "\"linkedin\": \"linkedin\"," +
-                "\"employeeType\": \"DEVELOPER\"," +
-                "\"password\": \"1234\"," +
-                "\"position\": " + 1 +
+                "\"client\": \"client\"," +
+                "\"externalProductManager\": \"manager\"," +
+                "\"productOwnerId\": " + employee.getId() + "," +
+                "\"scrumMasterId\": 200000" + //this id does not exist in DB test
                 "}";
-        mockMvc.perform(post("/employee")
+        mockMvc.perform(post("/project")
                         .contentType(APPLICATION_JSON_UTF8).content(payload))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
