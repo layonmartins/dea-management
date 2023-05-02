@@ -1,4 +1,4 @@
-package br.com.dea.management.academyclass.delete;
+package br.com.dea.management.project.delete;
 
 import br.com.dea.management.AcademyTestUtils;
 import br.com.dea.management.academyclass.ClassType;
@@ -6,6 +6,9 @@ import br.com.dea.management.academyclass.domain.AcademyClass;
 import br.com.dea.management.academyclass.repository.AcademyClassRepository;
 import br.com.dea.management.employee.EmployeeTestUtils;
 import br.com.dea.management.employee.repository.EmployeeRepository;
+import br.com.dea.management.project.ProjectTestUtils;
+import br.com.dea.management.project.domain.Project;
+import br.com.dea.management.project.repository.ProjectRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,10 +36,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test-mysql")
+@ActiveProfiles("test-msql")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
-public class AcademyClassDeleteTests {
+public class ProjectDeleteTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -52,25 +55,32 @@ public class AcademyClassDeleteTests {
     @Autowired
     private EmployeeTestUtils employeeTestUtils;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
+    private ProjectTestUtils projectTestUtils;
+
     public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
     @BeforeEach
     void beforeEach() {
-        log.info("Before each test in " + AcademyClassDeleteTests.class.getSimpleName());
+        log.info("Before each test in " + ProjectDeleteTests.class.getSimpleName());
     }
 
     @BeforeAll
     void beforeSuiteTest() {
-        log.info("Before all tests in " + AcademyClassDeleteTests.class.getSimpleName());
+        log.info("Before all tests in " + ProjectDeleteTests.class.getSimpleName());
     }
 
     @Test
-    void whenDeleteAAcademyClassThatDoesNotExist_thenReturn404() throws Exception {
-        this.academyClassRepository.deleteAll();
+    void whenDeleteAProjectThatDoesNotExist_thenReturn404() throws Exception {
 
-        mockMvc.perform(delete("/academy-class/1")
-                .contentType(APPLICATION_JSON_UTF8))
+        this.projectRepository.deleteAll();
+
+        mockMvc.perform(delete("/project/1")
+                        .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message").exists())
@@ -80,25 +90,28 @@ public class AcademyClassDeleteTests {
     }
 
     @Test
-    void whenDeleteAAcademyClass_thenReturnSuccessfully() throws Exception {
+    void whenDeleteAProject_thenReturnSuccessfully() throws Exception {
 
         // Preparing for the Test
+        this.projectRepository.deleteAll();
         this.academyClassRepository.deleteAll();
         this.employeeRepository.deleteAll();
 
-        // created a valid academyClass
-        LocalDate startDate = LocalDate.of(2023, Month.JANUARY, 1);
-        LocalDate endDate = LocalDate.of(2024, Month.DECEMBER, 20);
-        this.academyClassTestUtils.createFakeClass(1, startDate, endDate, ClassType.DEVELOPER);
-        Long academyClassId = this.academyClassRepository.findAll().get(0).getId();
+        // created a valid project
+        this.projectTestUtils.createFakeProject(1);
 
-        mockMvc.perform(delete("/academy-class/" + academyClassId)
+        //get the project Id
+        Long projectId = this.projectRepository.findAll().get(0).getId();
+
+
+        mockMvc.perform(delete("/project/" + projectId)
                         .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 
-        // check if the academyCalls has already deleted from DataBase
-        List<AcademyClass> academyClasses = this.academyClassRepository.findAll();
-        assertThat(academyClasses.size()).isEqualTo(0);
+        // check if the project has already deleted from DataBase
+        List<Project> project = this.projectRepository.findAll();
+        assertThat(project.size()).isEqualTo(0);
 
     }
+
 }

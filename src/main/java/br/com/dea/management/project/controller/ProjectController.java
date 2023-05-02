@@ -95,4 +95,20 @@ public class ProjectController {
         log.info(String.format("Class updated successfully : id : %s", Project.getId()));
     }
 
+    @Operation(summary = "Delete a Project")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation"),
+            @ApiResponse(responseCode = "400", description = "Payload not valid"),
+            @ApiResponse(responseCode = "404", description = "Project not found"),
+            @ApiResponse(responseCode = "500", description = "Error deleting Project")
+    })
+    @DeleteMapping("/project/{projectId}")
+    public void deleteProject(@PathVariable Long projectId) {
+        log.info(String.format("Deleting AcademyClass: Payload : %s", projectId));
+
+        this.ProjectService.deleteProject(projectId);
+
+        log.info(String.format("AcademyClass deleted: Payload : %s", projectId));
+    }
+
 }

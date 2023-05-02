@@ -102,7 +102,7 @@ public class AcademyClassController {
             @ApiResponse(responseCode = "200", description = "Successful operation"),
             @ApiResponse(responseCode = "400", description = "Payload not valid"),
             @ApiResponse(responseCode = "404", description = "AcademyClass not found"),
-            @ApiResponse(responseCode = "500", description = "Error creating AcademyClass")
+            @ApiResponse(responseCode = "500", description = "Error deleting AcademyClass")
     })
     @DeleteMapping("/academy-class/{academyClassId}")
     public void deleteAcademyClass(@PathVariable Long academyClassId) {

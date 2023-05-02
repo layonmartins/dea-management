@@ -72,4 +72,9 @@ public class ProjectService {
         return this.projectRepository.save(project);
     }
 
+    public void deleteProject(Long projectId) {
+        Project project = this.findProjectById(projectId);
+        this.projectRepository.delete(project);
+    }
+
 }
